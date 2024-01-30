@@ -1,0 +1,110 @@
+podupiti:
+
+SELECT ime from radnik
+Where sruk=
+(select sruk from Radnik where ime='cankar');
+(NOT)IN- provjerava postoji li neka vrijednost u grupi vrijednosti
+ALL/ANY- provjerava postoji li veza za svakog/ijednog clana iz skupa vrijednosti
+EXISTS- provjerava da li je grupa vrijednosti prazna ili ne
+primjer:NOT IN
+Prikazati kompletne zapise radnika relacije Radnik, čija šifra rukovodioca nije  7903 niti 7698.
+SELECT * FROM Radnik WHERE Sruk NOT IN (7903, 7698);
+primjer IN:
+Prikazati sifrad, ime, radmj i sruk radnika relacije Radnik, kojima je rukovodilac  analitičar.
+SELECT sifrad, ime, radmj, sruk  FROM Radnik
+WHERE sruk IN
+(SELECT sifrad FROM Radnik WHERE  radmj='analitičar');
+Primjer all:
+Napisati upit koji vraća imena radnika, relacije Radnik  koji primaju najveću platu.
+Select ime from Radnik where plata>= all(select plata from Radnik);
+Primjer Any:
+Napisati upit koji vraća imena radnika, relacije Radnik  
+čija je plata veća od plate bilo kog radnika čije je radno  mjesto upravnik.
+select ime from radnik where plata>=any(select plata from radnik where radmj='upravnik');
+
+ORDER BY:
+za sortiranje
+primjer:
+SELECT * FROM Rezultati  ORDER BY Bod;
+
+ CONCAT
+CONCAT(Ime, ′ ′, Prezime)
+Povezuje više znakovnih vrijednosti u  jednu.
+
+CHAR
+CHAR(sifrad)
+Pretvara cjelobrojnu (integer) vrijednost  u znakovni niz.
+
+INSTR
+INSTR(lok, ’ ’)
+Javlja poziciju prvog SPACE-a znaka u  LOK.
+
+LENGTH
+LENGTH(str)
+Dužina str u oktetima.
+
+CHAR_LENGTH
+CHAR_LENGTH(str)
+Broj znakova u stringu str
+
+LOWER
+LOWER(str)
+Pretvara str u mala slova.
+
+SUBSTR
+SUBSTR(str, 1, 2)
+Vraća dva znaka od stringa str, počinje  sa prvim.
+
+UPPER
+UPPER(str)
+Prevodi mala slova iz str u velika.
+
+TRIM
+TRIM(str)
+Uklanja vodeće i prateće SPACE-ove.
+
+INSERT
+INSERT(str, poz, rlen, newstr)
+Umeće newstr u str. Umetanje stringa u  string.
+
+REPLACE
+REPLACE(str, str1, str2)
+Vraća string str, u kome je svaki str1  zamijenjen sa str2.
+
+SOUNDEX
+SOUNDEX(str)
+Vraća string koji zvuči slično kao string  str.
+
+primjer:
+SELECT imeodj, AVG(Plata) SrdPlt  FROM Odjel, Radnik
+WHERE Odjel.sifodj=Radnik.sifodj  GROUP BY imeodj;
+
+
+
+primjeri:
+Povećati 3% platu svim upravnicima iz odjela Prodaja
+UPDATE Radnik
+SET plata=1.03*plata
+WHERE radmj='upravnik'
+AND sifodj IN (SELECT sifodj FROM Odjel WHERE imeodj='Prodaja');
+Izvršiti pretraživanje relacije RADNIK tako da se u izvještaju dobiju
+radna mjesta i prosječna
+plata zaposlenih na tim radnim mjestima. Prikazati samo ona radna mjesta
+kod kojih je srednja plata
+veća od srednjeg ukunog primanja radnika prodavača. Prilikom izračunavan
+ja srednjeg ukupnog
+primanja, za prodavače koji ne primaju stimulaciju uzeti da im je stimulacija 0
+SELECT radmj, AVG(Plata) AS "Prosjecna plata"
+FROM radnik
+GROUP BY radmj
+HAVING AVG(Plata) >=
+(SELECT AVG(plata+IFNULL(stimul,0))
+FROM radnik
+WHERE radmj='prodavač');
+Povećati stimulaciju. Ažurirati zapise iz tabele RADNIK kod kojih je vrijednost atributa radmj
+prodavač i plata manja od 1000, tako da im stimulacija bude uvecana za 100.
+UPDATE Radnik
+SET stimul=stimul+100
+WHERE radmj='prodavač'
+AND plata<1000;
+
